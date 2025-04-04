@@ -1,0 +1,152 @@
+:root {
+    --primary-color: #e50914;
+    --dark-bg: #141414;
+    --darker-bg: #000000;
+    --light-text: #ffffff;
+    --muted-text: #999999;
+}
+
+html {
+    font-size: 14px;
+    position: relative;
+    min-height: 100%;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+body {
+    background-color: var(--darker-bg);
+    color: var(--light-text);
+    margin-bottom: 60px;
+}
+
+/* Navbar styles */
+.navbar {
+    background-color: var(--darker-bg) !important;
+}
+
+.navbar-brand {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.nav-link {
+    color: var(--light-text) !important;
+    font-weight: 500;
+}
+
+.nav-link:hover {
+    color: var(--primary-color) !important;
+}
+
+/* Search box styles */
+.form-control {
+    background-color: var(--dark-bg) !important;
+    border-color: #333 !important;
+    color: var(--light-text) !important;
+}
+
+.form-control:focus {
+    box-shadow: none;
+    border-color: var(--primary-color) !important;
+}
+
+.form-control::placeholder {
+    color: var(--muted-text);
+}
+
+/* Button styles */
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+    background-color: darken(var(--primary-color), 10%);
+    border-color: darken(var(--primary-color), 10%);
+}
+
+/* Movie card styles */
+.movie-card {
+    transition: transform 0.3s ease;
+}
+
+.movie-card:hover {
+    transform: scale(1.05);
+}
+
+.movie-card .card-title {
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
+}
+
+.movie-card .text-muted {
+    font-size: 0.875rem;
+}
+
+.movie-card .badge {
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--dark-bg);
+}
+
+::-webkit-scrollbar-thumb {
+    background: #333;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #444;
+}
+
+/* Dropdown menu styles */
+.dropdown-menu {
+    background-color: var(--dark-bg) !important;
+    border-color: #333 !important;
+}
+
+.dropdown-item {
+    color: var(--light-text) !important;
+}
+
+.dropdown-item:hover {
+    background-color: var(--primary-color) !important;
+    color: var(--light-text) !important;
+}
+
+/* Section title styles */
+h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+}
+
+.vr {
+    opacity: 1;
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
+  color: var(--bs-secondary-color);
+  text-align: end;
+}
+
+.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
+  text-align: start;
+}

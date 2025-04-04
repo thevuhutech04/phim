@@ -1,0 +1,77 @@
+@model PhimMoiDaDen.Models.User
+
+@{
+    ViewData["Title"] = "Thông tin tài khoản";
+}
+
+<div class="container my-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h2>Thông tin tài khoản</h2>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-4 text-center">
+                            <div class="avatar-circle mb-3">
+                                <i class="fas fa-user fa-5x text-primary"></i>
+                            </div>
+                            <h4>@Model.Username</h4>
+                            <p class="badge bg-@(Model.Role.RoleName == "Admin" ? "danger" : "primary")">
+                                @(Model.Role.RoleName == "Admin" ? "Quản trị viên" : "Thành viên")
+                            </p>
+                        </div>
+                        <div class="col-md-8">
+                            <table class="table">
+                                <tbody>
+                                    <tr>
+                                        <th class="w-25">Họ và tên:</th>
+                                        <td>@Model.FullName</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Email:</th>
+                                        <td>@Model.Email</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Ngày tham gia:</th>
+                                        <td>@Model.CreatedAt.ToString("dd/MM/yyyy")</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end mt-3">
+                        <a asp-controller="Account" asp-action="Favorites" class="btn btn-outline-primary me-2">
+                            <i class="fas fa-heart me-2"></i>Phim yêu thích
+                        </a>
+                        <button class="btn btn-outline-primary me-2" disabled>
+                            <i class="fas fa-edit me-2"></i>Chỉnh sửa thông tin
+                        </button>
+                        <form asp-controller="Account" asp-action="Logout" method="post">
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-sign-out-alt me-2"></i>Đăng xuất
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .avatar-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto;
+        }
+    </style>
+} 

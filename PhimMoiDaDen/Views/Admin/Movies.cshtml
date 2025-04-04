@@ -1,0 +1,123 @@
+@model IEnumerable<PhimMoiDaDen.Models.Movie>
+
+@{
+    ViewData["Title"] = "Quản lý phim";
+}
+
+<div class="container-fluid px-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="d-flex align-items-center mb-0">
+            <div class="vr bg-primary me-2" style="width: 4px; height: 24px;"></div>
+            Quản lý phim
+        </h2>
+        <a asp-action="CreateMovie" class="btn btn-primary">
+            <i class="fas fa-plus me-2"></i>
+            Thêm phim mới
+        </a>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="card bg-dark border-secondary">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-dark table-hover">
+                    <thead>
+                        <tr>
+                            <th>Poster</th>
+                            <th>Tên phim</th>
+                            <th>Thể loại</th>
+                            <th>Năm</th>
+                            <th>Chất lượng</th>
+                            <th>Lượt xem</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var movie in Model)
+                        {
+                            <tr>
+                                <td style="width: 100px;">
+                                    <img src="@movie.PosterUrl" class="img-fluid rounded" alt="@movie.Title">
+                                </td>
+                                <td>
+                                    <div class="fw-bold">@movie.Title</div>
+                                    <small class="text-muted">@movie.Director</small>
+                                </td>
+                                <td>
+                                    @foreach (var mc in movie.MovieCategories)
+                                    {
+                                        <span class="badge bg-secondary me-1">@mc.Category.Name</span>
+                                    }
+                                </td>
+                                <td>@movie.ReleaseYear</td>
+                                <td>
+                                    <span class="badge bg-primary">@movie.Quality</span>
+                                </td>
+                                <td>@movie.Views</td>
+                                <td>
+                                    <div class="btn-group">
+                                        <a asp-action="EditMovie" asp-route-id="@movie.MovieId" 
+                                           class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <button type="button" class="btn btn-sm btn-outline-danger" 
+                                                onclick="confirmDelete(@movie.MovieId, '@movie.Title')">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content bg-dark">
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title">Xác nhận xóa</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                Bạn có chắc chắn muốn xóa phim "<span id="movieTitle"></span>"?
+            </div>
+            <div class="modal-footer border-secondary">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <form id="deleteForm" asp-action="DeleteMovie" method="post">
+                    <input type="hidden" id="movieId" name="id">
+                    <button type="submit" class="btn btn-danger">Xóa</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function confirmDelete(id, title) {
+            document.getElementById('movieId').value = id;
+            document.getElementById('movieTitle').textContent = title;
+            new bootstrap.Modal(document.getElementById('deleteModal')).show();
+        }
+    </script>
+} 

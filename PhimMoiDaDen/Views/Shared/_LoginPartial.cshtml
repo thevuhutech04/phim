@@ -1,0 +1,42 @@
+@using Microsoft.AspNetCore.Http
+
+@{
+    var isLoggedIn = Context.Session.GetString("Username") != null;
+    var isAdmin = Context.Session.GetString("Role") == "Admin";
+}
+
+@if (isLoggedIn)
+{
+    <div class="dropdown">
+        <button class="btn btn-link text-light dropdown-toggle p-0" type="button" id="userDropdown" 
+                data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fas fa-user me-1"></i>
+            <span>@Context.Session.GetString("Username")</span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end bg-dark" aria-labelledby="userDropdown">
+            <li><a class="dropdown-item text-light" asp-controller="Account" asp-action="Profile">Hồ sơ</a></li>
+            <li><a class="dropdown-item text-light" asp-controller="Account" asp-action="Favorites">Yêu thích</a></li>
+            @if (isAdmin)
+            {
+                <li><a class="dropdown-item text-light" asp-controller="Admin" asp-action="Index">Quản trị</a></li>
+            }
+            <li><hr class="dropdown-divider bg-secondary"></li>
+            <li>
+                <form asp-controller="Account" asp-action="Logout" method="post">
+                    <button type="submit" class="dropdown-item text-light">Đăng xuất</button>
+                </form>
+            </li>
+        </ul>
+    </div>
+}
+else
+{
+    <div class="d-flex">
+        <a class="btn btn-outline-primary me-2" asp-controller="Account" asp-action="Login">
+            Đăng nhập
+        </a>
+        <a class="btn btn-primary" asp-controller="Account" asp-action="Register">
+            Đăng ký
+        </a>
+    </div>
+} 

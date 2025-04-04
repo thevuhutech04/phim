@@ -1,0 +1,142 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - PhimMoiDaDen</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body class="bg-black text-light">
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-dark bg-black border-bottom box-shadow">
+            <div class="container-fluid px-4">
+                <a class="navbar-brand d-flex align-items-center" asp-controller="Home" asp-action="Index">
+                    <i class="fas fa-play-circle text-danger me-2"></i>
+                    <span class="fw-bold">4Guys1Flix</span>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Home" asp-action="Index">Trang chủ</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Movie" asp-action="All">Phim</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Category" asp-action="Index">Thể loại</a>
+                        </li>
+                        @if (Context.Session.GetString("Role") == "Admin")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Admin" asp-action="Index">Quản trị</a>
+                            </li>
+                        }
+                    </ul>
+                    <div class="d-flex align-items-center">
+                        <form class="d-flex me-3" asp-controller="Movie" asp-action="Search" method="get">
+                            <div class="input-group">
+                                <input class="form-control bg-dark border-dark text-light" type="search" name="query" 
+                                       placeholder="Tìm kiếm phim..." aria-label="Search">
+                                <button class="btn btn-outline-light" type="submit">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </form>
+                        <div class="d-flex align-items-center">
+                            <button class="btn btn-link text-light me-2" title="Chế độ tối/sáng">
+                                <i class="fas fa-sun"></i>
+                            </button>
+                            <div class="dropdown">
+                                <button class="btn btn-link text-light dropdown-toggle" type="button" id="languageDropdown" 
+                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-globe"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end bg-dark" aria-labelledby="languageDropdown">
+                                    <li><a class="dropdown-item text-light" href="#">Tiếng Việt</a></li>
+                                    <li><a class="dropdown-item text-light" href="#">English</a></li>
+                                </ul>
+                            </div>
+                            @if (Context.Session.GetString("Username") != null)
+                            {
+                                <div class="dropdown ms-2">
+                                    <button class="btn btn-link text-light dropdown-toggle" type="button" id="userDropdown" 
+                                            data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fas fa-user me-1"></i>
+                                        <span>@Context.Session.GetString("Username")</span>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end bg-dark" aria-labelledby="userDropdown">
+                                        <li><a class="dropdown-item text-light" asp-controller="Account" asp-action="Profile">
+                                            <i class="fas fa-user-circle me-2"></i>Hồ sơ</a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item text-light" asp-controller="Account" asp-action="Favorites">
+                                                <i class="fas fa-heart me-2"></i>Phim yêu thích
+                                            </a>
+                                        </li>
+                                        @if (Context.Session.GetString("Role") == "Admin")
+                                        {
+                                            <li>
+                                                <a class="dropdown-item text-light" asp-controller="Admin" asp-action="Index">
+                                                    <i class="fas fa-cog me-2"></i>Quản trị
+                                                </a>
+                                            </li>
+                                        }
+                                        <li><hr class="dropdown-divider bg-secondary"></li>
+                                        <li>
+                                            <form asp-controller="Account" asp-action="Logout" method="post">
+                                                <button type="submit" class="dropdown-item text-light">
+                                                    <i class="fas fa-sign-out-alt me-2"></i>Đăng xuất
+                                                </button>
+                                            </form>
+                                        </li>
+                                    </ul>
+                                </div>
+                            }
+                            else
+                            {
+                                <a class="btn btn-outline-primary me-2" asp-controller="Account" asp-action="Login">
+                                    Đăng nhập
+                                </a>
+                                <a class="btn btn-primary" asp-controller="Account" asp-action="Register">
+                                    Đăng ký
+                                </a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main role="main" class="pb-3">
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show mx-4 mt-3" role="alert">
+                @TempData["SuccessMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show mx-4 mt-3" role="alert">
+                @TempData["ErrorMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        
+        @RenderBody()
+    </main>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

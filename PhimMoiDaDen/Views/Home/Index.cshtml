@@ -1,0 +1,77 @@
+﻿@model IEnumerable<PhimMoiDaDen.Models.Movie>
+
+@{
+    ViewData["Title"] = "Trang chủ";
+}
+
+<div class="container-fluid px-4">
+    <h2 class="mb-4 d-flex align-items-center">
+        <div class="vr bg-primary me-2" style="width: 4px; height: 24px;"></div>
+        Phim mới cập nhật
+    </h2>
+
+    <div class="row row-cols-2 row-cols-md-4 row-cols-lg-5 g-4">
+        @foreach (var movie in Model)
+        {
+            <div class="col">
+                <div class="card bg-transparent border-0 movie-card h-100">
+                    <div class="position-relative">
+                        <img src="@movie.PosterUrl" class="card-img-top rounded" alt="@movie.Title" 
+                             style="height: 300px; object-fit: cover;">
+                        <div class="overlay position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center">
+                            <a href="@Url.Action("Details", "Movie", new { id = movie.MovieId })" 
+                               class="btn btn-primary rounded-circle">
+                                <i class="fas fa-info"></i>
+                            </a>
+                        </div>
+                        @if (!string.IsNullOrEmpty(movie.Quality))
+                        {
+                            <span class="position-absolute top-0 end-0 m-2 badge bg-primary">@movie.Quality</span>
+                        }
+                    </div>
+                    <div class="card-body px-0 py-2">
+                        <h5 class="card-title text-truncate mb-1">
+                            <a href="@Url.Action("Details", "Movie", new { id = movie.MovieId })" 
+                               class="text-light text-decoration-none">@movie.Title</a>
+                        </h5>
+                        <p class="card-text">
+                            <small class="text-muted">
+                                @movie.ReleaseYear
+                                @if (movie.Duration > 0)
+                                {
+                                    <span class="mx-1">•</span>
+                                    <span>@movie.Duration phút</span>
+                                }
+                            </small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+.movie-card .overlay {
+    background: rgba(0, 0, 0, 0.7);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.movie-card:hover .overlay {
+    opacity: 1;
+}
+
+.movie-card .btn-primary {
+    width: 50px;
+    height: 50px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.movie-card .btn-primary i {
+    font-size: 1.5rem;
+}
+</style>

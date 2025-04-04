@@ -1,0 +1,167 @@
+@model IEnumerable<PhimMoiDaDen.Models.Favorite>
+
+@{
+    ViewData["Title"] = "Phim yêu thích";
+}
+
+<div class="container my-4">
+    <div class="d-flex align-items-center mb-4">
+        <h2 class="d-flex align-items-center mb-0">
+            <div class="vr bg-primary me-2" style="width: 4px; height: 24px;"></div>
+            Phim yêu thích của bạn
+        </h2>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">
+            <p class="mb-0">Bạn chưa có phim yêu thích nào. Hãy thêm phim vào danh sách yêu thích để xem sau!</p>
+        </div>
+        <div class="mt-3">
+            <a asp-controller="Movie" asp-action="All" class="btn btn-primary">
+                <i class="fas fa-film me-2"></i>Khám phá phim
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-4">
+            @foreach (var favorite in Model)
+            {
+                var movie = favorite.Movie;
+                <div class="col">
+                    <div class="card movie-card bg-dark border-secondary h-100">
+                        <div class="card-poster">
+                            <img src="@movie.PosterUrl" class="card-img-top" alt="@movie.Title">
+                            <div class="quality-badge">@movie.Quality</div>
+                            
+                            <div class="card-actions">
+                                <a asp-controller="Movie" asp-action="Watch" asp-route-id="@movie.MovieId" 
+                                   class="play-button" title="Xem phim">
+                                    <i class="fas fa-play"></i>
+                                </a>
+                                <form asp-controller="Movie" asp-action="ToggleFavorite" method="post" class="d-inline">
+                                    <input type="hidden" name="movieId" value="@movie.MovieId" />
+                                    <button type="submit" class="favorite-button active" title="Bỏ yêu thích">
+                                        <i class="fas fa-heart"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <a asp-controller="Movie" asp-action="Details" asp-route-id="@movie.MovieId" 
+                                   class="text-light text-decoration-none">@movie.Title</a>
+                            </h5>
+                            <div class="card-info">
+                                <span class="year">@movie.ReleaseYear</span>
+                                <span class="duration">@movie.Duration phút</span>
+                            </div>
+                            <div class="categories mt-2">
+                                @foreach (var mc in movie.MovieCategories?.Take(2) ?? Enumerable.Empty<PhimMoiDaDen.Models.MovieCategory>())
+                                {
+                                    <span class="badge bg-primary me-1">@mc.Category.Name</span>
+                                }
+                            </div>
+                        </div>
+                        <div class="card-footer text-muted small bg-dark border-secondary">
+                            <div>Đã thêm: @favorite.AddedAt.ToString("dd/MM/yyyy")</div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@section Styles {
+    <style>
+        .movie-card {
+            transition: transform 0.3s, box-shadow 0.3s;
+            overflow: hidden;
+        }
+        
+        .movie-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            border-color: var(--bs-primary) !important;
+        }
+        
+        .card-poster {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card-poster img {
+            height: 300px;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+        
+        .movie-card:hover .card-poster img {
+            transform: scale(1.05);
+        }
+        
+        .quality-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(0,0,0,0.7);
+            color: #fff;
+            padding: 3px 6px;
+            border-radius: 3px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .card-actions {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            padding: 30px 10px 10px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .movie-card:hover .card-actions {
+            opacity: 1;
+        }
+        
+        .play-button, .favorite-button {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--bs-primary);
+            color: white;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        
+        .play-button:hover, .favorite-button:hover {
+            transform: scale(1.1);
+            background: #ff4858;
+        }
+        
+        .favorite-button.active {
+            background: #ff4858;
+        }
+        
+        .card-info {
+            color: #adb5bd;
+            font-size: 0.85rem;
+        }
+        
+        .card-info span:not(:last-child):after {
+            content: "•";
+            margin: 0 5px;
+        }
+    </style>
+} 

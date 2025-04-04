@@ -1,0 +1,146 @@
+ @model PhimMoiDaDen.Models.Movie
+
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<div class="container">
+    <div class="row">
+        <!-- Movie Info -->
+        <div class="col-md-8">
+            <div class="card bg-dark text-light border-secondary">
+                <img src="@Model.BackdropUrl" class="card-img-top" alt="@Model.Title" style="height: 400px; object-fit: cover;">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h1 class="card-title">@Model.Title</h1>
+                        <div>
+                            <form asp-controller="Movie" asp-action="ToggleFavorite" method="post" class="d-inline">
+                                <input type="hidden" name="movieId" value="@Model.MovieId" />
+                                <button type="submit" class="btn btn-outline-danger">
+                                    <i class="fas fa-heart"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <span class="badge bg-primary me-2">@Model.Genre</span>
+                        <span class="badge bg-secondary me-2">@Model.ReleaseYear</span>
+                        <span class="badge bg-info me-2">@Model.Language</span>
+                        <span class="badge bg-warning text-dark me-2">
+                            <i class="fas fa-star"></i> @Model.Rating
+                        </span>
+                        <span class="badge bg-success">
+                            <i class="fas fa-eye"></i> @Model.Views
+                        </span>
+                    </div>
+
+                    <p class="card-text">@Model.Description</p>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <p><strong>Director:</strong> @Model.Director</p>
+                            <p><strong>Cast:</strong> @Model.Cast</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Duration:</strong> @Model.Duration minutes</p>
+                            <p><strong>Country:</strong> @Model.Country</p>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <a asp-controller="Movie" asp-action="Watch" asp-route-id="@Model.MovieId" class="btn btn-primary">
+                            <i class="fas fa-play me-2"></i> Watch Movie
+                        </a>
+                        @if (!string.IsNullOrEmpty(Model.TrailerUrl))
+                        {
+                            <a href="@Model.TrailerUrl" target="_blank" class="btn btn-outline-primary">
+                                <i class="fas fa-film me-2"></i> Watch Trailer
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comments Section -->
+            <div class="card bg-dark text-light border-secondary mt-4">
+                <div class="card-body">
+                    <h3 class="card-title mb-4">Comments</h3>
+
+                    @if (Context.Session.GetString("Username") != null)
+                    {
+                        <form asp-controller="Movie" asp-action="AddComment" method="post" class="mb-4">
+                            <input type="hidden" name="movieId" value="@Model.MovieId" />
+                            <div class="mb-3">
+                                <textarea name="content" class="form-control bg-dark text-light" rows="3" placeholder="Write your comment..." required></textarea>
+                            </div>
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="checkbox" name="isAnonymous" id="isAnonymous">
+                                <label class="form-check-label" for="isAnonymous">
+                                    Post anonymously
+                                </label>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit Comment</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <div class="alert alert-info">
+                            Please <a asp-controller="Account" asp-action="Login">login</a> to comment.
+                        </div>
+                    }
+
+                    @foreach (var comment in Model.Comments.OrderByDescending(c => c.CreatedAt))
+                    {
+                        <div class="card bg-dark border-secondary mb-3">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <h6 class="card-subtitle mb-2 text-muted">
+                                        @(comment.IsAnonymous ? "Anonymous" : comment.User.Username)
+                                    </h6>
+                                    <small class="text-muted">@comment.CreatedAt.ToString("MMM dd, yyyy HH:mm")</small>
+                                </div>
+                                <p class="card-text">@comment.Content</p>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Similar Movies -->
+        <div class="col-md-4">
+            <h3 class="mb-3">Similar Movies</h3>
+            @foreach (var category in Model.MovieCategories.Select(mc => mc.Category))
+            {
+                <div class="mb-4">
+                    <h5>More @category.Name Movies</h5>
+                    @foreach (var movieCategory in category.MovieCategories.Where(mc => mc.MovieId != Model.MovieId).Take(3))
+                    {
+                        var movie = movieCategory.Movie;
+                        <div class="card bg-dark text-light border-secondary mb-2">
+                            <div class="row g-0">
+                                <div class="col-4">
+                                    <img src="@movie.PosterUrl" class="img-fluid rounded-start" alt="@movie.Title" style="height: 100%; object-fit: cover;">
+                                </div>
+                                <div class="col-8">
+                                    <div class="card-body">
+                                        <h6 class="card-title">@movie.Title</h6>
+                                        <p class="card-text">
+                                            <small class="text-muted">
+                                                <i class="fas fa-star text-warning"></i> @movie.Rating
+                                                <span class="mx-1">|</span>
+                                                <i class="fas fa-eye"></i> @movie.Views
+                                            </small>
+                                        </p>
+                                        <a asp-controller="Movie" asp-action="Details" asp-route-id="@movie.MovieId" class="btn btn-sm btn-primary">Watch</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</div>

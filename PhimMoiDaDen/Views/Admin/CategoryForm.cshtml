@@ -1,0 +1,48 @@
+@model PhimMoiDaDen.Models.Category
+
+@{
+    ViewData["Title"] = Model.CategoryId > 0 ? "Chỉnh sửa thể loại" : "Thêm thể loại mới";
+}
+
+<div class="container my-4">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h2>@ViewData["Title"]</h2>
+        </div>
+        <div class="card-body">
+            <form method="post" asp-action="@(Model.CategoryId > 0 ? "EditCategory" : "CreateCategory")">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                
+                @if (Model.CategoryId > 0)
+                {
+                    <input type="hidden" asp-for="CategoryId" />
+                }
+
+                <div class="mb-3">
+                    <label asp-for="Name" class="form-label">Tên thể loại</label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Description" class="form-label">Mô tả</label>
+                    <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Lưu
+                    </button>
+                    <a asp-action="Categories" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Quay lại
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+} 

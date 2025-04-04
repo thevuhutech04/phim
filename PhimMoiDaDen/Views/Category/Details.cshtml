@@ -1,0 +1,131 @@
+@model PhimMoiDaDen.Models.Category
+
+@{
+    ViewData["Title"] = "Phim " + Model.Name;
+}
+
+<div class="container-fluid px-4">
+    <div class="d-flex align-items-center mb-4">
+        <h2 class="d-flex align-items-center mb-0">
+            <div class="vr bg-primary me-2" style="width: 4px; height: 24px;"></div>
+            Phim thể loại: @Model.Name
+        </h2>
+    </div>
+
+    <div class="category-description mb-4">
+        <p class="text-muted">@Model.Description</p>
+    </div>
+
+    @if (Model.MovieCategories.Any())
+    {
+        <div class="row g-4">
+            @foreach (var movieCategory in Model.MovieCategories)
+            {
+                var movie = movieCategory.Movie;
+                <div class="col-6 col-md-4 col-lg-3 col-xl-2">
+                    <div class="movie-card">
+                        <div class="poster">
+                            <a asp-controller="Movie" asp-action="Details" asp-route-id="@movie.MovieId">
+                                <img src="@movie.PosterUrl" class="img-fluid rounded" alt="@movie.Title">
+                                <div class="overlay">
+                                    <div class="play-button">
+                                        <i class="fas fa-info"></i>
+                                    </div>
+                                </div>
+                                <div class="quality-badge">@movie.Quality</div>
+                            </a>
+                        </div>
+                        <div class="info mt-2">
+                            <h5 class="title text-truncate">
+                                <a asp-controller="Movie" asp-action="Details" asp-route-id="@movie.MovieId" class="text-light text-decoration-none">
+                                    @movie.Title
+                                </a>
+                            </h5>
+                            <div class="meta d-flex justify-content-between">
+                                <span class="year">@movie.ReleaseYear</span>
+                                <span class="duration">@movie.Duration phút</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            Không có phim nào thuộc thể loại này.
+        </div>
+    }
+</div>
+
+@section Styles {
+    <style>
+        .movie-card {
+            transition: transform 0.3s;
+        }
+        
+        .movie-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .poster {
+            position: relative;
+            border-radius: 0.375rem;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .poster:hover .overlay {
+            opacity: 1;
+        }
+        
+        .play-button {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--bs-primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 1.25rem;
+        }
+        
+        .quality-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--bs-primary);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.25rem;
+            font-weight: 500;
+        }
+        
+        .title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .meta {
+            font-size: 0.85rem;
+            color: #adb5bd;
+        }
+    </style>
+} 
